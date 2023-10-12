@@ -1,0 +1,17 @@
+services:
+  lsphp-cli:
+    image: ghcr.io/sitepilot/lsphp-cli:1.x-8.1
+    profiles:
+      - donotstart
+    build:
+      context: ./src
+      target: cli
+
+  lsphp-ols:
+    image: ghcr.io/sitepilot/lsphp-ols:1.x-8.1
+    build:
+      context: ./src
+      target: ols
+    ports:
+      - 8080:80
+      - 8443:443

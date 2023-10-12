@@ -1,0 +1,6 @@
+#!/bin/bash
+
+template app.conf.j2 /usr/local/lsws/conf/vhosts/app.conf
+template httpd.conf.j2 /usr/local/lsws/conf/httpd_config.conf
+
+generate_certs
