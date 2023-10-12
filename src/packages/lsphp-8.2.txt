@@ -1,0 +1,10 @@
+lsphp82
+lsphp82-mysql
+lsphp82-imap
+lsphp82-curl
+lsphp82-common
+lsphp82-imagick
+lsphp82-opcache
+lsphp82-redis
+lsphp82-memcached
+lsphp82-intl

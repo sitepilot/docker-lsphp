@@ -1,0 +1,11 @@
+lsphp74
+lsphp74-mysql
+lsphp74-imap
+lsphp74-curl
+lsphp74-common
+lsphp74-json
+lsphp74-imagick
+lsphp74-opcache
+lsphp74-redis
+lsphp74-memcached
+lsphp74-intl
