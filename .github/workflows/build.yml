@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 1.x
+    paths:
+      - 'src/**'
   schedule:
     - cron: '0 0 * * *'
   pull_request:
@@ -20,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
