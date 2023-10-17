@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+mkdir -p $OLS_LOGS_DIR $OLS_CERTS_DIR $OLS_FILES_DIR
+
+template app.conf.tmpl /usr/local/lsws/conf/vhosts/app.conf
+template httpd.conf.tmpl /usr/local/lsws/conf/httpd_config.conf
+
+generate_certs $OLS_CERTS_DIR

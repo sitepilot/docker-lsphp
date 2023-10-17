@@ -1,6 +1,6 @@
 serverName                app
-user                      {{ env('RUNTIME_USER') }}
-group                     {{ env('RUNTIME_GROUP') }}
+user                      {{ .Env.RUNTIME_USER }}
+group                     {{ .Env.RUNTIME_GROUP }}
 priority                  0
 enableLVE                 0
 inMemBufSize              60M
@@ -11,7 +11,7 @@ mime                      conf/mime.properties
 showVersionNumber         0
 useIpInProxyHeader        1
 
-errorlog {{ env('OLS_LOGS_DIR') }}/error.log {
+errorlog {{ .Env.OLS_LOGS_DIR }}/error.log {
   logLevel                WARN
   debugLevel              0
   rollingSize             0
@@ -107,14 +107,14 @@ accessControl  {
 extprocessor lsphp {
   type                    lsapi
   address                 uds://tmp/lshttpd/lsphp.sock
-  maxConns                {{ env('PHP_PM_MAX_CHILDREN', '20') }}
-  env                     PHP_LSAPI_CHILDREN={{ env('PHP_PM_MAX_CHILDREN', '20') }}
+  maxConns                {{ default .Env.PHP_PM_MAX_CHILDREN "20" }}
+  env                     PHP_LSAPI_CHILDREN={{ default .Env.PHP_PM_MAX_CHILDREN "20" }}
   initTimeout             60
   retryTimeout            0
   persistConn             1
   respBuffer              0
   autoStart               2
-  path                    /usr/local/lsws/lsphp{{ env('PHP_VERSION') | replace('.', '') }}/bin/lsphp
+  path                    /usr/local/lsws/lsphp{{ replace .Env.PHP_VERSION "." "" 1 }}/bin/lsphp
   backlog                 100
   instances               1
   runOnStartUp            2
@@ -148,7 +148,7 @@ module cache {
 }
 
 virtualhost app {
-  vhRoot                  {{ env('OLS_FILES_DIR') }}
+  vhRoot                  {{ .Env.OLS_FILES_DIR }}
   configFile              $SERVER_ROOT/conf/vhosts/$VH_NAME.conf
   allowSymbolLink         1
   enableScript            1
@@ -165,7 +165,7 @@ listener http {
 listener https {
   address                 *:443
   secure                  1
-  keyFile                 {{ env('RUNTIME_WORKDIR') }}/ssl.key
-  certFile                {{ env('RUNTIME_WORKDIR') }}/ssl.crt
+  keyFile                 {{ .Env.OLS_CERTS_DIR }}/ssl.key
+  certFile                {{ .Env.OLS_CERTS_DIR }}/ssl.crt
   map                     app *
 }
