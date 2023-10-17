@@ -15,6 +15,7 @@ ADD packages/lsphp-${PHP_VERSION}.txt /tmp/packages.txt
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 011AA62DEDA1F085; \
     curl -s http://rpms.litespeedtech.com/debian/enable_lst_debian_repo.sh | bash; \
     $RUNTIME_BIN_DIR/install msmtp $(cat /tmp/packages.txt); \
+    mkdir -p /etc/php; \
     export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g); \
     ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current; \
     ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION/bin/php /usr/local/bin/php; \
