@@ -9,14 +9,14 @@ ARG PHP_VERSION=8.1
 ENV RUNTIME_LOG_LEVEL=3 \
     PHP_VERSION=${PHP_VERSION}
 
-RUN $RUNTIME_BIN_DIR/install gnupg2 less
+RUN rt-install gnupg2 less
 
 ADD packages/${PHP_VERSION}-${TARGETARCH}.txt /tmp/packages.txt
 
 RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg \
     && wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg \
     && echo "deb http://rpms.litespeedtech.com/debian/ jammy main" > /etc/apt/sources.list.d/lst_debian_repo.list \
-    && $RUNTIME_BIN_DIR/install msmtp $(cat /tmp/packages.txt) \
+    && rt-install msmtp $(cat /tmp/packages.txt) \
     && mkdir -p /etc/php \
     && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
     && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current \
@@ -29,7 +29,7 @@ COPY --from=wordpress:cli-2 /usr/local/bin/wp /usr/local/bin/wp
 
 COPY cli /
 
-RUN $RUNTIME_BIN_DIR/finalize
+RUN rt-finalize
 
 USER $RUNTIME_UID
 
@@ -38,18 +38,18 @@ FROM cli as ols
 
 USER root
 
-ENV RUNTIME_LOG_LEVEL=2 \
+ENV RUNTIME_LOG_LEVEL=1 \
     OLS_LOGS_DIR="$RUNTIME_WORKDIR/logs" \
     OLS_CERTS_DIR="$RUNTIME_WORKDIR/certs" \
     OLS_FILES_DIR="$RUNTIME_WORKDIR/files" \
     OLS_PUBLIC_DIR="/"
 
-RUN $RUNTIME_BIN_DIR/install openlitespeed \
+RUN rt-install openlitespeed \
     && chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
 
 COPY ols /
 
-RUN $RUNTIME_BIN_DIR/finalize
+RUN rt-finalize
 
 USER $RUNTIME_UID
 
