@@ -12,14 +12,13 @@ RUN $RUNTIME_BIN_DIR/install gnupg2 less
 
 ADD packages/lsphp-${PHP_VERSION}.txt /tmp/packages.txt
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 011AA62DEDA1F085; \
-    curl -s http://rpms.litespeedtech.com/debian/enable_lst_debian_repo.sh | bash; \
-    $RUNTIME_BIN_DIR/install msmtp $(cat /tmp/packages.txt); \
-    mkdir -p /etc/php; \
-    export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g); \
-    ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current; \
-    ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION/bin/php /usr/local/bin/php; \
-    chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
+RUN wget -O - https://repo.litespeed.sh | bash \
+    && $RUNTIME_BIN_DIR/install msmtzp $(cat /tmp/packages.txt) \
+    && mkdir -p /etc/php \
+    && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
+    && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current \
+    && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION/bin/php /usr/local/bin/php \
+    && chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -42,8 +41,8 @@ ENV RUNTIME_LOG_LEVEL=2 \
     OLS_FILES_DIR="$RUNTIME_WORKDIR/files" \
     OLS_PUBLIC_DIR="/"
 
-RUN $RUNTIME_BIN_DIR/install openlitespeed; \
-    chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
+RUN $RUNTIME_BIN_DIR/install openlitespeed \
+    && chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
 
 COPY ols /
 
