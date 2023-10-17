@@ -21,15 +21,13 @@ RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech
     && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
     && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current \
     && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION/bin/php /usr/local/bin/php \
-    && chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
+    && rt-rchown /usr/local/lsws
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY --from=wordpress:cli-2 /usr/local/bin/wp /usr/local/bin/wp
 
-COPY cli /
-
-RUN rt-finalize
+COPY --chown=$RUNTIME_UID:$RUNTIME_GID cli /
 
 USER $RUNTIME_UID
 
@@ -45,11 +43,9 @@ ENV RUNTIME_LOG_LEVEL=1 \
     OLS_PUBLIC_DIR="/"
 
 RUN rt-install openlitespeed \
-    && chown -R $RUNTIME_UID:$RUNTIME_GID /usr/local/lsws
+    && rt-rchown /usr/local/lsws
 
-COPY ols /
-
-RUN rt-finalize
+COPY --chown=$RUNTIME_UID:$RUNTIME_GID ols /
 
 USER $RUNTIME_UID
 
