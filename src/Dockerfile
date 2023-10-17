@@ -8,7 +8,7 @@ ARG PHP_VERSION=8.1
 ENV RUNTIME_LOG_LEVEL=3 \
     PHP_VERSION=${PHP_VERSION}
 
-RUN $RUNTIME_BIN_DIR/install less
+RUN $RUNTIME_BIN_DIR/install gnupg2 less
 
 ADD packages/lsphp-${PHP_VERSION}.txt /tmp/packages.txt
 
