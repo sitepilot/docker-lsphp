@@ -3,6 +3,7 @@ FROM ghcr.io/sitepilot/runtime:1.x as cli
 
 USER root
 
+ARG BUILDARCH="amd64"
 ARG PHP_VERSION=8.1
 
 ENV RUNTIME_LOG_LEVEL=3 \
@@ -10,9 +11,11 @@ ENV RUNTIME_LOG_LEVEL=3 \
 
 RUN $RUNTIME_BIN_DIR/install gnupg2 less
 
-ADD packages/lsphp-${PHP_VERSION}.txt /tmp/packages.txt
+ADD packages/${PHP_VERSION}-${BUILDARCH}.txt /tmp/packages.txt
 
-RUN wget -O - https://repo.litespeed.sh | bash \
+RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg \
+    && wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg \
+    && echo "deb http://rpms.litespeedtech.com/debian/ jammy main" > /etc/apt/sources.list.d/lst_debian_repo.list \
     && $RUNTIME_BIN_DIR/install msmtp $(cat /tmp/packages.txt) \
     && mkdir -p /etc/php \
     && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
