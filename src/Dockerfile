@@ -13,7 +13,7 @@ RUN $RUNTIME_BIN_DIR/install gnupg2 less
 ADD packages/lsphp-${PHP_VERSION}.txt /tmp/packages.txt
 
 RUN wget -O - https://repo.litespeed.sh | bash \
-    && $RUNTIME_BIN_DIR/install msmtzp $(cat /tmp/packages.txt) \
+    && $RUNTIME_BIN_DIR/install msmtp $(cat /tmp/packages.txt) \
     && mkdir -p /etc/php \
     && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
     && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current \
