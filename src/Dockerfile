@@ -16,7 +16,7 @@ ADD packages/${PHP_VERSION}-${TARGETARCH}.txt /tmp/packages.txt
 RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg \
     && wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg \
     && echo "deb http://rpms.litespeedtech.com/debian/ jammy main" > /etc/apt/sources.list.d/lst_debian_repo.list \
-    && rt-install msmtp $(cat /tmp/packages.txt) \
+    && rt-install msmtp unzip $(cat /tmp/packages.txt) \
     && mkdir -p /etc/php \
     && export LSPHP_VERSION=$(echo $PHP_VERSION | sed s/[.]//g) \
     && ln -sf /usr/local/lsws/lsphp$LSPHP_VERSION /etc/php/current \
