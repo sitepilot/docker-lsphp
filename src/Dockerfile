@@ -3,7 +3,7 @@ FROM ghcr.io/sitepilot/runtime:1.x as cli
 
 USER root
 
-ARG BUILDARCH="amd64"
+ARG TARGETARCH
 ARG PHP_VERSION=8.1
 
 ENV RUNTIME_LOG_LEVEL=3 \
@@ -11,7 +11,7 @@ ENV RUNTIME_LOG_LEVEL=3 \
 
 RUN $RUNTIME_BIN_DIR/install gnupg2 less
 
-ADD packages/${PHP_VERSION}-${BUILDARCH}.txt /tmp/packages.txt
+ADD packages/${PHP_VERSION}-${TARGETARCH}.txt /tmp/packages.txt
 
 RUN wget -O /etc/apt/trusted.gpg.d/lst_debian_repo.gpg http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg \
     && wget -O /etc/apt/trusted.gpg.d/lst_repo.gpg http://rpms.litespeedtech.com/debian/lst_repo.gpg \
