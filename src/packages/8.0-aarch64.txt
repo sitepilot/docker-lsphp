@@ -3,8 +3,5 @@ lsphp80-mysql
 lsphp80-imap
 lsphp80-curl
 lsphp80-common
-lsphp80-imagick
 lsphp80-opcache
-lsphp80-redis
-lsphp80-memcached
 lsphp80-intl
