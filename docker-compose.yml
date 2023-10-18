@@ -1,6 +1,6 @@
 services:
   lsphp-cli:
-    image: ghcr.io/sitepilot/lsphp-cli:1.x-8.1
+    image: ghcr.io/sitepilot/lsphp-cli:8.1
     profiles:
       - donotstart
     build:
@@ -8,7 +8,7 @@ services:
       target: cli
 
   lsphp-ols:
-    image: ghcr.io/sitepilot/lsphp-ols:1.x-8.1
+    image: ghcr.io/sitepilot/lsphp-ols:8.1
     build:
       context: ./src
       target: ols
