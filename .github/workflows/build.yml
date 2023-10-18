@@ -38,20 +38,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get branch name
-        run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: Get version from branch name
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          echo "VERSION=v${BRANCH/.x/}" >> $GITHUB_ENV
 
-      - name: Build and push image
+      - name: Build lsphp-${{ matrix.target }} image
         uses: docker/build-push-action@v5
         with:
           context: ./src
           pull: true
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/sitepilot/lsphp-${{ matrix.target }}:${{ env.BRANCH }}-${{ matrix.php }}
+          tags: |
+            ghcr.io/sitepilot/lsphp-${{ matrix.target }}:${{ matrix.php }}
+            ghcr.io/sitepilot/lsphp-${{ matrix.target }}:${{ env.VERSION }}-${{ matrix.php }}
           platforms: linux/amd64, linux/arm64
           target: ${{ matrix.target }}
           provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=lsphp-${{ matrix.target }}-${{ env.VERSION }}-${{ matrix.php }}
+          cache-to: type=gha,mode=max,scope=lsphp-${{ matrix.target }}-${{ env.VERSION }}-${{ matrix.php }}
           build-args: |
             PHP_VERSION=${{ matrix.php }}

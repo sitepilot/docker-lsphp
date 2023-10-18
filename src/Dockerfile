@@ -1,5 +1,5 @@
 # --------------- [LSPHP-CLI] --------------- #
-FROM ghcr.io/sitepilot/runtime:1.x as cli
+FROM ghcr.io/sitepilot/runtime:v1 as cli
 
 USER root
 
