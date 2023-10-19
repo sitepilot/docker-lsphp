@@ -12,50 +12,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  lsphp-cli:
+    uses: ./.github/workflows/build-and-test-job.yml
+    with:
+      target: cli
+      tests: |
+        docker run ghcr.io/sitepilot/lsphp-cli:build php -v
+        docker run ghcr.io/sitepilot/lsphp-cli:build wp --version
+        docker run ghcr.io/sitepilot/lsphp-cli:build composer --version
+    secrets: inherit
 
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [ '7.4', '8.0', '8.1', '8.2' ]
-        target: [ 'cli', 'ols' ]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get version from branch name
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          echo "VERSION=v${BRANCH/.x/}" >> $GITHUB_ENV
-
-      - name: Build lsphp-${{ matrix.target }} image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./src
-          pull: true
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ghcr.io/sitepilot/lsphp-${{ matrix.target }}:${{ matrix.php }}
-            ghcr.io/sitepilot/lsphp-${{ matrix.target }}:${{ env.VERSION }}-${{ matrix.php }}
-          platforms: linux/amd64, linux/arm64
-          target: ${{ matrix.target }}
-          provenance: false
-          cache-from: type=gha,scope=lsphp-${{ matrix.target }}-${{ env.VERSION }}-${{ matrix.php }}
-          cache-to: type=gha,mode=max,scope=lsphp-${{ matrix.target }}-${{ env.VERSION }}-${{ matrix.php }}
-          build-args: |
-            PHP_VERSION=${{ matrix.php }}
+  lsphp-ols:
+    uses: ./.github/workflows/build-and-test-job.yml
+    with:
+      target: ols
+      tests: |
+        docker run ghcr.io/sitepilot/lsphp-ols:build /usr/local/lsws/bin/litespeed -v
+    secrets: inherit
